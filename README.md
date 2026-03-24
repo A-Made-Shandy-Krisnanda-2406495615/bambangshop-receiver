@@ -85,5 +85,8 @@ This is the place for you to write reflections:
 ### Mandatory (Subscriber) Reflections
 
 #### Reflection Subscriber-1
+1. `RwLock<Vec<Notification>>` lebih tepat digunakan pada kasus ini karena memungkinkan banyak thread melakukan operasi baca secara bersamaan, sementara operasi tulis tetap dibatasi satu thread pada satu waktu. Dibandingkan `Mutex<Vec<Notification>>`, pendekatan ini lebih efisien karena repository receiver cenderung lebih sering membaca daftar notifikasi daripada menulis data baru. Dengan demikian, penggunaan `RwLock` dapat mengurangi bottleneck saat aplikasi menangani akses data secara konkuren.
+
+2. Pada Rust, `static` variable pada dasarnya bersifat immutable demi menjaga keamanan memori dan thread safety. Oleh karena itu, meskipun kita menggunakan `lazy_static!` untuk membuat singleton database, perubahan isi data tetap harus dibungkus dengan mekanisme sinkronisasi seperti `RwLock` atau `Mutex`. Hal ini berbeda dengan Java yang lebih longgar terhadap mutasi variabel statis. Dalam konteks tutorial ini, kombinasi `lazy_static!` dan `RwLock` diperlukan agar data global dapat diakses dan dimodifikasi secara aman.
 
 #### Reflection Subscriber-2
